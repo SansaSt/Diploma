@@ -109,14 +109,37 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
   
     }
   
-      elem.forEach((item) => {
+      elem.forEach(item => {
           item.addEventListener("input", mask);
           item.addEventListener("focus", mask);
         item.addEventListener("blur", mask);
-      })
+      });
   }
 
   maskPhone();
+
+  // More
+
+  const moreBtn = () => {
+    const btn = document.querySelector('.add-sentence-btn'),
+          products = document.querySelectorAll('.product'),
+          hidden = document.querySelectorAll('.hidden');
+
+  
+    btn.addEventListener('click', () => {
+      for (let i = 3; i < products.length; i++) {
+        products[i].classList.remove('hidden');
+      }
+      btn.style.display = 'none';
+
+      hidden.forEach(e => {
+        e.classList.remove('hidden');
+      });
+    });
+
+  };
+  
+  moreBtn();
   
 
 });
