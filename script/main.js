@@ -69,6 +69,18 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
 
   popUpD();
 
+  // PopUpCheck
+
+  const popUpCheck = () => {
+    const popUpCheck = document.querySelector('.popup-check');
+    const checkBtn = document.querySelector('.check-btn');
+    checkBtn.addEventListener('click', event => {
+      modalsOpen(popUpCheck);
+    });
+  };
+
+  popUpCheck();
+
   // Accordion
 
   const accordionTwo = () => {
