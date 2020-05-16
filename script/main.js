@@ -36,19 +36,38 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
     const callBtns = document.querySelectorAll('.call-btn'),
           popUpCall = document.querySelector('.popup-call ');
 
-    callBtns.forEach(item => {
-      item.addEventListener('click', event => {
-        event.preventDefault();
+          callBtns.forEach(item => {
+            item.addEventListener('click', event => {
+              event.preventDefault();
 
-        modalsOpen(popUpCall);
+              modalsOpen(popUpCall);
 
-      });
+            });
 
-    });
+          });
 
   };
 
   popUpCall();
+
+  // PopUpDiscount
+
+  const popUpD = () => {
+    const discountBtn = document.querySelectorAll('.discount-btn'),
+          popUpDiscount = document.querySelector('.popup-discount');
+
+          discountBtn.forEach(item => {
+            item.addEventListener('click', event => {
+              event.preventDefault();
+      
+              modalsOpen(popUpDiscount);
+      
+            });
+      
+          });
+  };
+
+  popUpD();
 
   // Accordion
 
@@ -139,7 +158,6 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
 
   };
   
-  moreBtn();
-  
+  moreBtn();  
 
 });
