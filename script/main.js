@@ -86,11 +86,27 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
 
   const popUpConsultation = () => {
     const consultationBtn = document.querySelector('.consultation-btn'),
-          popUpC = document.querySelector('.popup-consultation');
+          popUpC = document.querySelector('.popup-consultation'),
+          consultQuestion = document.querySelector('.consult-question'),
+          directorForm = document.querySelector('.director-form');
+
+    const message = document.createElement('div');
+          message.classList.add('message');
+          message.textContent = 'Пожалуйста, введите свой вопрос';
+          message.style.cssText = `font-size: 2rem;
+          color: red;`;
 
     consultationBtn.addEventListener('click', event => {
       event.preventDefault();
-      modalsOpen(popUpC);
+      if (consultQuestion.value) {
+        modalsOpen(popUpC);
+      } else { 
+        directorForm.appendChild(message);
+
+        setTimeout(() => {
+          message.remove();
+        }, 5000);
+      }
     });
   };
 
@@ -122,6 +138,70 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
 
   accordionTwo();
 
+  // Accordion-constructor
+
+  const accordionConstructor = () => {
+  
+  };
+
+  accordionConstructor();
+
+  // Constructor-calculator
+
+  /* const calcCount = () => {
+    let price = 0,
+        resultPrice = 0;
+
+    const calcResult = (selector, option) => {
+      
+      const value = selector.value.match(/^[0-9]{1}\.[0-9]{1}|[0-9]{1}/)[0];
+    
+      if (option === 'diameter' && value === '2') {
+        resultPrice += (price * 0.2);
+      }
+      if (option === 'rings') {
+        if (value === '2') {
+          resultPrice += (price * 0.3);
+        } 
+        if (value === '3') {
+          resultPrice += (price * 0.5);
+        }
+      }
+    };
+  
+    const diameter1 = document.querySelector('.diameter');
+    const diameter2 = document.querySelector('.diameter2');
+    const numberOfRings1 = document.querySelector('.number-of-rings');
+    const numberOfRings2 = document.querySelector('.number-of-rings2');
+    const checkboxType = document.querySelector('.checkbox-type');
+    const checkboxThree = document.querySelector('.checkbox-three');
+  
+  
+    if (checkboxType.hasAttribute('checked')) {
+      price = 10000;
+      resultPrice = price;
+      calcResult(diameter1, 'diameter');
+      calcResult(numberOfRings1, 'rings');
+    } else {
+      price = 15000;
+      resultPrice = price;
+      calcResult(diameter1, 'diameter');
+      calcResult(numberOfRings1, 'rings');
+      calcResult(diameter2, 'diameter');
+      calcResult(numberOfRings2, 'rings');
+    }
+  
+    if (checkboxThree.hasAttribute('checked')) {
+      if (price === 10000) {
+        resultPrice += 1000;
+      } else {
+        resultPrice += 2000;
+      }
+    } 
+  }; */
+  
+  //calcCount();
+  
   // Phone mask
 
 
@@ -195,7 +275,11 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
           successMessage = 'Спасибо, мы скоро с вами свяжемся!',
           forms = document.querySelectorAll('form');
     const statusMessage = document.createElement('div');
-    statusMessage.style.cssText = 'fort-size: 2rem';
+          statusMessage.classList.add('status-message');
+          statusMessage.style.cssText = 'fort-size: 2rem';
+
+    const directorForm = document.querySelector('.director-form'),
+          consultQuestion = document.querySelector('.consult-question');
 
     const postData = (body, outputData, errorData) => {
       const request = new XMLHttpRequest();
@@ -211,11 +295,13 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
 
         }
       });
+
       request.open('POST', './server.php');
       request.setRequestHeader('Content-Type', 'application/json');
 
       request.send(JSON.stringify(body));
     };
+
     forms.forEach(form => {
       form.addEventListener('input', (evt) => {
         let target = evt.target;
@@ -224,36 +310,54 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
           target.value = target.value.replace(/[^а-я ]/gi, '');
         }
       });
-      
 
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        form.appendChild(statusMessage);
-        statusMessage.style.cssText = `font-size: 2rem;
-              color: #000; `;
-        const formData = new FormData(form);
-        statusMessage.textContent = loadMessage;
-
-       
-        let body = {};
-        for (let val of formData.entries()) {
-          body[val[0]] = val[1];
-        }
-        postData(body,
-          () => {
-            statusMessage.style.cssText = `font-size: 2rem;
-              color: green; `;
-            statusMessage.textContent = successMessage;
-            form.reset();
-          },
-          (error) => {
-            statusMessage.style.cssText = `font-size: 2rem;
-              color: red; `;
-            statusMessage.textContent = errorMessage;
-          });
-      });
+    let userQuest;
+    directorForm.addEventListener('submit', event => {
+      userQuest = consultQuestion.value;
     });
+      
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      form.appendChild(statusMessage);
+      statusMessage.style.cssText = `font-size: 2rem;
+            color: #000; `;
+
+      const formData = new FormData(form);
+      statusMessage.textContent = loadMessage;
+
+      let body = {};
+      for (let val of formData.entries()) {
+        body[val[0]] = val[1];
+      }
+      body.userQuest = consultQuestion.value;
+
+      postData(body,
+        () => {
+          statusMessage.style.cssText = `font-size: 2rem;
+            color: green; `;
+          statusMessage.textContent = successMessage;
+          removeStatusMessage();
+          form.reset();
+        },
+        (error) => {
+          statusMessage.style.cssText = `font-size: 2rem;
+            color: red; `;
+          statusMessage.textContent = errorMessage;
+          removeStatusMessage();
+        });
+    });
+  });
+
+  const removeStatusMessage = () => {
+    const status = document.querySelector('.status-message');
+    if (!status) {
+      return;
+    }
+      setTimeout(() => {
+      status.remove();
+    }, 5000);
   };
+};
 
   sendForm();
 

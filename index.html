@@ -139,12 +139,12 @@
                                 </a>
                             </h4>
                         </div>
-                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
+                        <div id="collapseOne" class="panel-collapse collapse1 collapse in" role="tabpanel"
                              aria-labelledby="headingOne">
                             <div class="panel-body">
                                 <img class="type-septic" src="img/constructor/type-septic.png" alt="septic">
                                 <div class="onoffswitch">
-                                    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox"
+                                    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox checkbox-type"
                                            id="myonoffswitch" checked>
                                     <label class="onoffswitch-label" for="myonoffswitch">
                                         <span class="onoffswitch-inner"></span>
@@ -188,7 +188,7 @@
                                         <option>3 штуки</option>
                                     </select>
                                 </div>
-
+                            <div class = "collapse-two">
                                 <div class="title-text">второй колодец (дренажный)</div>
                                 <div class="select-box">
                                     <p><strong>Диаметр</strong></p>
@@ -205,6 +205,7 @@
                                         <option>3 штуки</option>
                                     </select>
                                 </div>
+                            </div>
                                 <a class="button construct-btn" data-toggle="collapse" data-parent="#accordion"
                                    href="#collapseThree"><span>Следующий шаг</span></a>
                             </div>
@@ -439,8 +440,8 @@
             <div class="col-lg-6 col-md-6">
                 <p class="question">Остались вопросы?</p>
                 <p>Введите свой вопрос и в течении 15 минут я свяжусь с вами!</p>
-                <form class="director-form">
-                    <input type="text" name="user_quest" placeholder="Введите свой вопрос" required>
+                <form class="form director-form">
+                    <input class="consult-question" type="text" name="user_quest" placeholder="Введите свой вопрос" required>
                     <button class="button director-btn consultation-btn" name="submit" type="submit">Получить
                         консультацию
                     </button>
