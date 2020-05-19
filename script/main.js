@@ -141,8 +141,48 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
   // Accordion-constructor
 
   const accordionConstructor = () => {
-  
-  };
+    const calcBlock = document.querySelector('.constructor');
+    const nextBtn = document.querySelectorAll('construct-btn');
+    const panels = calcBlock.querySelectorAll('panel');
+ 
+    calcBlock.addEventListener('click', event => {
+      event.preventDefault();
+      let target = event.target;
+      const panelCollapse = document.querySelectorAll('.collapse1');
+      const checkboxType = document.querySelector('.checkbox-type');
+      const collapseTwo = document.querySelector('.collapse-two');
+
+      // показывать-скрывать блок
+
+      if (target.closest('.onoffswitch') && target.parentNode.tagName === 'LABEL') {
+        target.parentNode.previousElementSibling.toggleAttribute('checked');
+      }
+
+      if (checkboxType.hasAttribute('checked')) {
+        collapseTwo.style.display = 'none';
+      } else {
+        collapseTwo.style.display = 'block';
+      }
+  });
+
+    let count = 0;
+
+    nextBtn.forEach((btn) => {
+
+      btn.addEventListener('click', () => {
+        count++;
+        for (let i = 0; i < panels.length; i++){
+          panels[i].classList.remove('in');
+        }
+    
+        panels[count].querySelector('.collapse').classList.add('in');
+      });
+
+
+    });
+
+
+};
 
   accordionConstructor();
 
@@ -363,5 +403,4 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
 
 });
 
-
-
+  
