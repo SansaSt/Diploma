@@ -9,7 +9,7 @@ const sendForm = () => {
 
 	const forms = document.querySelectorAll('form'),
 				bodyHtml = document.querySelector('body'),
-				inputConsult = document.querySelector('input[name="user_quest"]');
+				consultQuestion = document.querySelector('.consult-question');
 
 	const statusMessage = document.createElement('div');
 	      statusMessage.classList.add('status-message');
@@ -62,11 +62,7 @@ const sendForm = () => {
             body = Object.assign(body, Data);
 				}
 				
-				else if (form.classList.contains('director-form')) {
-					body.quest = inputConsult.value;
-					inputConsult.value = '';
-
-				}
+				body.userQuest = consultQuestion.value;
 
 				const outputData = response => {
 					if (response.status !== 200) {
