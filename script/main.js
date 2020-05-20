@@ -277,8 +277,6 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
           panels[3].classList.add('in');
           break;
         }
-      } else {
-        data.distance = +distance.value;
       }
 
       target = target.closest('.panel-heading');
@@ -295,7 +293,6 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
       const target = event.target;
 
       if (target.matches('select') || target.closest('.onoffswitch-checkbox')) {
-        console.log(target);
         countSum();
       }
     });
@@ -375,13 +372,14 @@ calc();
     const errorMessage = 'Что-то пошло не так',
           loadMessage = 'Загрузка...',
           successMessage = 'Спасибо, мы скоро с вами свяжемся!',
-          forms = document.querySelectorAll('form');
+          forms = document.querySelectorAll('form'),
+          consultQuestion = document.querySelector('.consult-question');
 
     const statusMessage = document.createElement('div');
           statusMessage.classList.add('status-message');
-          statusMessage.style.cssText = 'fort-size: 2rem';
+          statusMessage.style.cssText = 'font-size: 2rem';
 
-    const inputConsult = document.querySelector('input[name="user_quest"]');
+         
 
     const removeStatusMessage = () => {
       const status = document.querySelector('.status-message');
@@ -393,26 +391,15 @@ calc();
       }, 5000);
     };
 
-    const postData = (body, outputData, errorData) => {
-      const request = new XMLHttpRequest();
-
-      request.addEventListener('readystatechange', () => {
-        if (request.readyState !== 4) {
-          return;
-        }
-        if (request.status === 200) {
-          outputData();
-        } else {
-          errorData(request.status);
-
-        }
-      });
-
-      request.open('POST', './server.php');
-      request.setRequestHeader('Content-Type', 'application/json');
-
-      request.send(JSON.stringify(body));
-    };
+    const postData = body => fetch('./server.php', {
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
 
     forms.forEach(form => {
       form.addEventListener('input', (evt) => {
@@ -434,13 +421,12 @@ calc();
           let body = {};
           for (const val of formData.entries()) {
             body[val[0]] = val[1];
-          }
-          
-          if (form.classList.contains('consultation-form')) {
-            body.quest = inputConsult.value;
-            inputConsult.value = '';
-          } else if (form.classList.contains('discount-form')) {
-            body = Object.assign(body, data);
+            if (form.classList.contains('consultation-form')) {
+              body.userQuest = consultQuestion.value;
+              consultQuestion.value = '';
+            } else if (form.classList.contains('discount-form')) {
+              body = Object.assign(body, data);
+            }
           }
   
           const outputData = response => {
@@ -448,12 +434,17 @@ calc();
               throw new Error('status network not 200');
             }
             removeStatusMessage();
+            statusMessage.style.cssText = `font-size: 2rem;
+        	  color: green; `;
             statusMessage.textContent = successMessage;
+            
             form.reset();
           };
   
           const error = error => {
             removeStatusMessage();
+            statusMessage.style.cssText = `font-size: 2rem;
+      	    color: red; `;
             statusMessage.textContent = errorMessage;
             console.error(error);
           };
