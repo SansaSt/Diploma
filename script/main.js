@@ -150,8 +150,7 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
       panelsHead = document.querySelectorAll('.panel-heading'),
       titleText = document.querySelectorAll('.title-text')[1],
       selectBox = document.querySelectorAll('.select-box'),
-      calcResult = document.getElementById('calc-result'),
-      distance = document.getElementById('distance');
+      calcResult = document.getElementById('calc-result');
 
 
     const countSum = () => {
@@ -411,9 +410,9 @@ calc();
       });
       
       form.addEventListener('submit', event => {
-        event.preventDefault();
-  
-        if (!form.classList.contains('director-form')) {
+          event.preventDefault();
+          
+          const formInputs = form.querySelectorAll('input');
           form.insertAdjacentElement('beforeend', statusMessage);
           statusMessage.textContent = loadMessage;
   
@@ -421,12 +420,13 @@ calc();
           let body = {};
           for (const val of formData.entries()) {
             body[val[0]] = val[1];
-            if (form.classList.contains('consultation-form')) {
-              body.userQuest = consultQuestion.value;
-              consultQuestion.value = '';
-            } else if (form.classList.contains('discount-form')) {
-              body = Object.assign(body, data);
-            }
+          }
+
+          if (form.classList.contains('director-form')) {
+            body.userQuest = consultQuestion.value;
+            consultQuestion.value = '';
+          } else if (form.classList.contains('capture-form')) {
+            body = Object.assign(body, data);
           }
   
           const outputData = response => {
@@ -452,7 +452,6 @@ calc();
           postData(body)
             .then(outputData)
             .catch(error);
-        }
       });
     });
   };
