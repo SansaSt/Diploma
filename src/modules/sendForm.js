@@ -8,7 +8,8 @@ const sendForm = () => {
 		successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
 
 	const forms = document.querySelectorAll('form'),
-		    bodyHtml = document.querySelector('body');
+				bodyHtml = document.querySelector('body'),
+				inputConsult = document.querySelector('input[name="user_quest"]');
 
 	const statusMessage = document.createElement('div');
 	      statusMessage.classList.add('status-message');
@@ -59,7 +60,13 @@ const sendForm = () => {
   
         if (form.classList.contains('capture-form')) {
             body = Object.assign(body, Data);
-        }
+				}
+				
+				else if (form.classList.contains('director-form')) {
+					body.quest = inputConsult.value;
+					inputConsult.value = '';
+
+				}
 
 				const outputData = response => {
 					if (response.status !== 200) {
