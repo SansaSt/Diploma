@@ -116,7 +116,9 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
 
   const accordionTwo = () => {
 
-    document.querySelectorAll('.panel-heading').forEach((acc, i, all) => {
+    const questions = document.querySelector('.questions');
+
+    questions.querySelectorAll('.panel-heading').forEach((acc, i, all) => {
       acc.addEventListener('click', () => {
         hideOthers(acc);
         acc.classList.toggle('in');
@@ -138,109 +140,169 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
 
   accordionTwo();
 
-  // Accordion-constructor
+  const data = {};
 
-  const accordionConstructor = () => {
-    const calcBlock = document.querySelector('.constructor');
-    const nextBtn = document.querySelectorAll('construct-btn');
-    const panels = calcBlock.querySelectorAll('panel');
- 
-    calcBlock.addEventListener('click', event => {
-      event.preventDefault();
-      let target = event.target;
-      const panelCollapse = document.querySelectorAll('.collapse1');
-      const checkboxType = document.querySelector('.checkbox-type');
-      const collapseTwo = document.querySelector('.collapse-two');
+  const calc = () => {
+    const calcBlock = document.getElementById('accordion'),
+      checkBoxDiv = document.querySelectorAll('.onoffswitch'),
+      checkBoxes = document.querySelectorAll('.onoffswitch-checkbox'),
+      panels = document.querySelectorAll('.panel-collapse'),
+      panelsHead = document.querySelectorAll('.panel-heading'),
+      titleText = document.querySelectorAll('.title-text')[1],
+      selectBox = document.querySelectorAll('.select-box'),
+      calcResult = document.getElementById('calc-result'),
+      distance = document.getElementById('distance');
 
-      // показывать-скрывать блок
 
-      if (target.closest('.onoffswitch') && target.parentNode.tagName === 'LABEL') {
-        target.parentNode.previousElementSibling.toggleAttribute('checked');
+    const countSum = () => {
+      const calcType = document.querySelectorAll('.form-control');
+      const typeValues = [];
+      for (let i = 0; i < 4; i++) {
+        typeValues.push(parseFloat(calcType[i].options[calcType[i].selectedIndex].value));
       }
 
-      if (checkboxType.hasAttribute('checked')) {
-        collapseTwo.style.display = 'none';
-      } else {
-        collapseTwo.style.display = 'block';
-      }
-  });
-
-    let count = 0;
-
-    nextBtn.forEach((btn) => {
-
-      btn.addEventListener('click', () => {
-        count++;
-        for (let i = 0; i < panels.length; i++){
-          panels[i].classList.remove('in');
+      calcBlock.addEventListener('input', event => {
+        const target = event.target;
+        if (target.id === 'distance') {
+          target.value = target.value.replace(/[^+\d]/g, '');
         }
-    
-        panels[count].querySelector('.collapse').classList.add('in');
       });
 
+      const checkBox1Checked = () => {
+        if (typeValues[0] === 2) {
+          data.total *= 1.2;
+        }
+        data.diameter1 = typeValues[0];
 
-    });
 
+        switch (true) {
+        case (typeValues[1] === 2):
+          data.total *= 1.3;
+          break;
+        case (typeValues[1] === 3):
+          data.total *= 1.5;
+          break;
+        }
+        data.numberRings1 = typeValues[1];
+      };
 
-};
+      if (checkBoxes[0].checked) {
+        titleText.style.display = 'none';
+        selectBox[2].style.display = 'none';
+        selectBox[3].style.display = 'none';
 
-  accordionConstructor();
+        data.total = 10000;
 
-  // Constructor-calculator
+        checkBox1Checked();
 
-  /* const calcCount = () => {
-    let price = 0,
-        resultPrice = 0;
+        if (checkBoxes[1].checked) {
+          data.total += 1000;
+          data.bottom = 'yes, +1000';
+        }
 
-    const calcResult = (selector, option) => {
-      
-      const value = selector.value.match(/^[0-9]{1}\.[0-9]{1}|[0-9]{1}/)[0];
-    
-      if (option === 'diameter' && value === '2') {
-        resultPrice += (price * 0.2);
+      } else if (!checkBoxes[0].checked) {
+        titleText.style.display = '';
+        selectBox[2].style.display = '';
+        selectBox[3].style.display = '';
+
+        data.total = 15000;
+
+        checkBox1Checked();
+
+        if (typeValues[2] === 2) {
+          data.total *= 1.2;
+        }
+        data.diameter2 = typeValues[2];
+
+        switch (true) {
+        case (typeValues[3] === 2):
+          data.total *= 1.3;
+          break;
+        case (typeValues[3] === 3):
+          data.total *= 1.5;
+          break;
+        }
+        data.numberRings2 = typeValues[3];
+
+        if (checkBoxes[1].checked) {
+          data.total += 2000;
+          data.bottom = 'yes, 2000';
+        }
       }
-      if (option === 'rings') {
-        if (value === '2') {
-          resultPrice += (price * 0.3);
-        } 
-        if (value === '3') {
-          resultPrice += (price * 0.5);
+      calcResult.placeholder = `Примерная стоимость: ${data.total} руб.`;
+    };
+
+    for (let i = 0; i < checkBoxDiv.length; i++) {
+      checkBoxDiv[i].addEventListener('click', () => {
+        if (checkBoxes[i].checked) {
+          checkBoxes[i].removeAttribute('checked');
+        } else {
+          checkBoxes[i].setAttribute('checked', 'checked');
+        }
+      });
+    }
+
+    const togglePanels = index => {
+      countSum();
+      for (let i = 0; i < panels.length; i++) {
+        if (index === i) {
+          panels[i].classList.add('in');
+        } else {
+          panels[i].classList.remove('in');
         }
       }
     };
-  
-    const diameter1 = document.querySelector('.diameter');
-    const diameter2 = document.querySelector('.diameter2');
-    const numberOfRings1 = document.querySelector('.number-of-rings');
-    const numberOfRings2 = document.querySelector('.number-of-rings2');
-    const checkboxType = document.querySelector('.checkbox-type');
-    const checkboxThree = document.querySelector('.checkbox-three');
-  
-  
-    if (checkboxType.hasAttribute('checked')) {
-      price = 10000;
-      resultPrice = price;
-      calcResult(diameter1, 'diameter');
-      calcResult(numberOfRings1, 'rings');
-    } else {
-      price = 15000;
-      resultPrice = price;
-      calcResult(diameter1, 'diameter');
-      calcResult(numberOfRings1, 'rings');
-      calcResult(diameter2, 'diameter');
-      calcResult(numberOfRings2, 'rings');
-    }
-  
-    if (checkboxThree.hasAttribute('checked')) {
-      if (price === 10000) {
-        resultPrice += 1000;
-      } else {
-        resultPrice += 2000;
+
+    calcBlock.addEventListener('click', event => {
+      event.preventDefault();
+      let target = event.target;
+
+      if (target.classList.contains('onoffswitch-inner')) {
+        countSum();
       }
-    } 
-  }; */
-  
-  //calcCount();
+
+      if (target.classList.contains('construct-btn')  && !target.classList.contains('discount-btn')) {
+        countSum();
+        switch (true) {
+        case (target.getAttribute('href') === '#collapseTwo'):
+          panels[0].classList.remove('in');
+          panels[1].classList.add('in');
+          break;
+        case (target.getAttribute('href') === '#collapseThree'):
+          panels[1].classList.remove('in');
+          panels[2].classList.add('in');
+          break;
+        case (target.getAttribute('href') === '#collapseFour'):
+          panels[2].classList.remove('in');
+          panels[3].classList.add('in');
+          break;
+        }
+      } else {
+        data.distance = +distance.value;
+      }
+
+      target = target.closest('.panel-heading');
+      if (target) {
+        panelsHead.forEach((item, i) => {
+          if (item === target) {
+            togglePanels(i);
+          }
+        });
+      }
+    });
+
+    calcBlock.addEventListener('change', event => {
+      const target = event.target;
+
+      if (target.matches('select') || target.closest('.onoffswitch-checkbox')) {
+        console.log(target);
+        countSum();
+      }
+    });
+
+};
+
+calc();
   
   // Phone mask
 
@@ -314,12 +376,22 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
           loadMessage = 'Загрузка...',
           successMessage = 'Спасибо, мы скоро с вами свяжемся!',
           forms = document.querySelectorAll('form');
+
     const statusMessage = document.createElement('div');
           statusMessage.classList.add('status-message');
           statusMessage.style.cssText = 'fort-size: 2rem';
 
-    const directorForm = document.querySelector('.director-form'),
-          consultQuestion = document.querySelector('.consult-question');
+    const inputConsult = document.querySelector('input[name="user_quest"]');
+
+    const removeStatusMessage = () => {
+      const status = document.querySelector('.status-message');
+      if (!status) {
+        return;
+      }
+        setTimeout(() => {
+        status.remove();
+      }, 5000);
+    };
 
     const postData = (body, outputData, errorData) => {
       const request = new XMLHttpRequest();
@@ -350,57 +422,51 @@ window.addEventListener('DOMContentLoaded', function(){  // фукнция за�
           target.value = target.value.replace(/[^а-я ]/gi, '');
         }
       });
-
-    let userQuest;
-    directorForm.addEventListener('submit', event => {
-      userQuest = consultQuestion.value;
-    });
       
-    form.addEventListener('submit', (event) => {
-      event.preventDefault();
-      form.appendChild(statusMessage);
-      statusMessage.style.cssText = `font-size: 2rem;
-            color: #000; `;
-
-      const formData = new FormData(form);
-      statusMessage.textContent = loadMessage;
-
-      let body = {};
-      for (let val of formData.entries()) {
-        body[val[0]] = val[1];
-      }
-      body.userQuest = consultQuestion.value;
-
-      postData(body,
-        () => {
-          statusMessage.style.cssText = `font-size: 2rem;
-            color: green; `;
-          statusMessage.textContent = successMessage;
-          removeStatusMessage();
-          form.reset();
-        },
-        (error) => {
-          statusMessage.style.cssText = `font-size: 2rem;
-            color: red; `;
-          statusMessage.textContent = errorMessage;
-          removeStatusMessage();
-        });
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+  
+        if (!form.classList.contains('director-form')) {
+          form.insertAdjacentElement('beforeend', statusMessage);
+          statusMessage.textContent = loadMessage;
+  
+          const formData = new FormData(form);
+          let body = {};
+          for (const val of formData.entries()) {
+            body[val[0]] = val[1];
+          }
+          
+          if (form.classList.contains('consultation-form')) {
+            body.quest = inputConsult.value;
+            inputConsult.value = '';
+          } else if (form.classList.contains('discount-form')) {
+            body = Object.assign(body, data);
+          }
+  
+          const outputData = response => {
+            if (response.status !== 200) {
+              throw new Error('status network not 200');
+            }
+            removeStatusMessage();
+            statusMessage.textContent = successMessage;
+            form.reset();
+          };
+  
+          const error = error => {
+            removeStatusMessage();
+            statusMessage.textContent = errorMessage;
+            console.error(error);
+          };
+  
+          postData(body)
+            .then(outputData)
+            .catch(error);
+        }
+      });
     });
-  });
-
-  const removeStatusMessage = () => {
-    const status = document.querySelector('.status-message');
-    if (!status) {
-      return;
-    }
-      setTimeout(() => {
-      status.remove();
-    }, 5000);
   };
-};
 
   sendForm();
 
 });
 
-  
