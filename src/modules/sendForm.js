@@ -22,15 +22,17 @@ const sendForm = () => {
 		}, 5000);
 	};
 
-	const postData = body => fetch('./server.php', {
-		method: 'POST',
-		mode: 'cors',
-		credentials: 'same-origin',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(body)
-	});
+		const postData = body => {
+			return fetch('./server.php', {
+					method: 'POST',
+					mode: 'cors',
+					credentials: 'same-origin',
+					headers: {
+							'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(body)
+			});
+	};
 
 	forms.forEach(form => {
 		form.addEventListener('input', event => {
