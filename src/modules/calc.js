@@ -9,7 +9,10 @@
       panelsHead = document.querySelectorAll('.panel-heading'),
       titleText = document.querySelectorAll('.title-text')[1],
       selectBox = document.querySelectorAll('.select-box'),
-      calcResult = document.getElementById('calc-result');
+      calcResult = document.getElementById('calc-result'),
+      panelHeading = document.querySelectorAll('.panel-heading'),
+      nextBtn = document.querySelectorAll('.construct-btn'),
+      panel = document.querySelectorAll('.panel-collapse');
 
 
     const countSum = () => {
@@ -100,16 +103,32 @@
       });
     }
 
-    const togglePanels = index => {
-      countSum();
-      for (let i = 0; i < panels.length; i++) {
-        if (index === i) {
-          panels[i].classList.add('in');
-        } else {
-          panels[i].classList.remove('in');
-        }
+    const accordionShow = (index) => {
+      for(let i = 0; i < panelHeading.length; i++){
+          if(index === i){
+              panel[i].classList.add('in');
+          } else {
+              panel[i].classList.remove('in');
+          }
       }
-    };
+  };
+
+  nextBtn.forEach((elem) => {
+    elem.addEventListener('click', (event) => {
+            let target = event.target;
+                target = target.closest('.construct-btn');
+            
+            if(target){
+                nextBtn.forEach((item, i) => {
+                    if(item === target){
+                        accordionShow(i + 1);
+                    }
+                });
+            }
+            
+    });
+});
+
 
     calcBlock.addEventListener('click', event => {
       event.preventDefault();
@@ -136,6 +155,17 @@
           break;
         }
       }
+
+      const togglePanels = index => {
+        countSum();
+        for (let i = 0; i < panels.length; i++) {
+          if (index === i) {
+            panels[i].classList.add('in');
+          } else {
+            panels[i].classList.remove('in');
+          }
+        }
+      };
 
       target = target.closest('.panel-heading');
       if (target) {
