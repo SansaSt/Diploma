@@ -4,12 +4,12 @@ import {
 
 const sendForm = () => {
 	const errorMessage = 'Что-то пошло не так...',
-		loadMessage = 'Загрузка...',
-		successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
+				loadMessage = 'Загрузка...',
+				successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
 
 	const forms = document.querySelectorAll('form'),
-				bodyHtml = document.querySelector('body'),
-				consultQuestion = document.querySelector('.consult-question');
+				consultQuestion = document.querySelector('.consult-question'),
+				inputConsult = document.querySelector('input[name="user_quest"]');
 
 	const statusMessage = document.createElement('div');
 	      statusMessage.classList.add('status-message');
@@ -23,74 +23,72 @@ const sendForm = () => {
 		}, 5000);
 	};
 
-		const postData = body => {
-			return fetch('./server.php', {
-					method: 'POST',
-					mode: 'cors',
-					credentials: 'same-origin',
-					headers: {
-							'Content-Type': 'application/json'
-					},
-					body: JSON.stringify(body)
-			});
-	};
+	const postData = body => {
+		return fetch('./server.php', {
+				method: 'POST',
+				mode: 'cors',
+				credentials: 'same-origin',
+				headers: {
+						'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(body)
+		});
+};
 
 	forms.forEach(form => {
 		form.addEventListener('input', event => {
-      const target = event.target;
-      
-			if (target.name === 'user_name') {
+			let target = event.target;
+			
+			if (target.name === 'user_name' || target.name === 'user_quest') {
 				target.value = target.value.replace(/[^а-я ]/gi, '');
 			}
 		});
+	});
 
-		form.addEventListener('submit', event => {
-      event.preventDefault();
-      
+	forms.forEach(form => {
+
+		form.addEventListener('submit', (event) => {
+				event.preventDefault();
+				form.appendChild(statusMessage);
 				statusMessage.textContent = loadMessage;
 
-        const formData = new FormData(form);
-        const formInputs = form.querySelectorAll('input');
-        
-        let body = {};
-        
-        formInputs.forEach(input => {
-          body[input.id.match(/^[a-z]*/)] = input.value;
-        });
-  
-        if (form.classList.contains('capture-form')) {
-            body = Object.assign(body, Data);
+				const formData = new FormData(form);
+
+				let body = {};
+
+				formData.forEach((val, key) => {
+						body[key] = val;
+				});
+
+				if (form.classList.contains('discount-form')) {
+					body = Object.assign(body, Data);
 				}
-				
-				body.userQuest = consultQuestion.value;
 
-				const outputData = response => {
-					if (response.status !== 200) {
-						throw new Error('status network not 200');
-					}
-					removeStatusMessage();
-					statusMessage.style.cssText = `font-size: 2rem;
-        	  color: green; `;
-          statusMessage.textContent = successMessage;
-          form.reset();
-				};
-
-				const error = error => {
-					removeStatusMessage();
-					statusMessage.style.cssText = `font-size: 2rem;
-      	    color: red; `;
-          statusMessage.textContent = errorMessage;
-          console.error(error);
-				};
-
-				postData(body)
-					.then(outputData)
-					.catch(error);
+				body.userQuest = inputConsult.value;
+				inputConsult.value = '';
 			
+				postData(body)
+						.then((response) => {
+								if(response.status !== 200){
+										throw new Error('status network now 200');
+								}
+								statusMessage.style.cssText = `font-size: 2rem;
+        	  		color: green; `;
+								statusMessage.textContent = successMessage;
+								removeStatusMessage();
+						})
+						.catch((error) => {
+								statusMessage.style.cssText = `font-size: 2rem;
+      	    		color: red; `;
+								statusMessage.textContent = errorMessage;
+								removeStatusMessage();
+								console.err(error);
+						});
+		
 		});
-	});
-};
+});
 
+};
 
 export default sendForm;
 
